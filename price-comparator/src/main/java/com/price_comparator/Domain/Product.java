@@ -10,8 +10,9 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer productId;
+    private Integer Id;
 
+    private String productId;
     private String productName;
     private String productCategory;
     private String brand;

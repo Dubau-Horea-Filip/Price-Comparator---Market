@@ -1,6 +1,7 @@
 package com.price_comparator.Service;
 
 
+import com.price_comparator.Controller.CsvImportController;
 import com.price_comparator.Domain.Discount;
 import com.price_comparator.Domain.Product;
 import com.price_comparator.Repository.DiscountRepository;
@@ -20,6 +21,7 @@ public class CsvImportService {
     @Autowired
     private ProductRepository productRepository;
 
+
     @Autowired
     private DiscountRepository discountRepository;
 
@@ -30,15 +32,14 @@ public class CsvImportService {
             while ((line = reader.readLine()) != null) {
                 String[] tokens = line.split(";");
                 Product product = new Product();
-                product.setProductId(Integer.valueOf(tokens[0]));
+                product.setProductId(tokens[0]);
                 product.setProductName(tokens[1]);
                 product.setProductCategory(tokens[2]);
                 product.setBrand(tokens[3]);
-                product.setPackageQuantity(Double.parseDouble(tokens[4]));
+                product.setPackageQuantity(Double.valueOf((tokens[4])));
                 product.setPackageUnit(tokens[5]);
                 product.setPrice(Double.parseDouble(tokens[6]));
                 product.setCurrency(tokens[7]);
-
                 productRepository.save(product);
             }
         }
