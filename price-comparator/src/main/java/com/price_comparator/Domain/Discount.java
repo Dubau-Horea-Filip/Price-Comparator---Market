@@ -14,6 +14,9 @@ public class Discount {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer Id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id_ref")
+    private Product product;
 
     private String productId;
     private String productName;

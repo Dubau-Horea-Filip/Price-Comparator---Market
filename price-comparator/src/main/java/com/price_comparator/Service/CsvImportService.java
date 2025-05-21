@@ -62,6 +62,9 @@ public class CsvImportService {
                 discount.setToDate(LocalDate.parse(tokens[7]));
                 discount.setPercentageOfDiscount(Integer.parseInt(tokens[8]));
 
+                Product product = productRepository.findByProductId(tokens[0]);
+                discount.setProduct(product);
+
                 discountRepository.save(discount);
             }
         }
