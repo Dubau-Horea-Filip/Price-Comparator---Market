@@ -1,7 +1,6 @@
 package com.price_comparator.Service;
 
 
-import com.price_comparator.Controller.CsvImportController;
 import com.price_comparator.Domain.Discount;
 import com.price_comparator.Domain.Product;
 import com.price_comparator.Repository.DiscountRepository;
@@ -25,7 +24,7 @@ public class CsvImportService {
     @Autowired
     private DiscountRepository discountRepository;
 
-    public void importProducts(MultipartFile file) throws IOException {
+    public void importProducts(MultipartFile file, String store) throws IOException {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
             reader.readLine(); // Skip header
             String line;
@@ -40,6 +39,7 @@ public class CsvImportService {
                 product.setPackageUnit(tokens[5]);
                 product.setPrice(Double.parseDouble(tokens[6]));
                 product.setCurrency(tokens[7]);
+                product.setStore(store);
                 productRepository.save(product);
             }
         }

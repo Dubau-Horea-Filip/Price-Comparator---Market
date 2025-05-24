@@ -1,8 +1,9 @@
 package com.price_comparator.Service;
 
-import com.price_comparator.DTO.UserDTO;
+import com.price_comparator.Domain.User;
 
 public interface UserService {
-    UserDTO getUserById(Long id);
+    User getUserById(Integer id);
+    User createUser(User user);
 }
 

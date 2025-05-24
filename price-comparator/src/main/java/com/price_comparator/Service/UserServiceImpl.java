@@ -1,9 +1,8 @@
 package com.price_comparator.Service;
 
-import com.price_comparator.DTO.UserDTO;
+import com.price_comparator.Domain.User;
 import com.price_comparator.Repository.UserRepository;
 import com.price_comparator.exceptions.ResourceNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,9 +14,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO getUserById(Long id) {
+    public User getUserById(Integer id) {
         return userRepository.findById(id)
-                .map(user -> new UserDTO(user.getId(), user.getName()))
+                .map(user -> new User(user.getId(), user.getName()))
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    }
+
+    @Override
+    public User createUser(User user) {
+      return  userRepository.save(user);
     }
 }

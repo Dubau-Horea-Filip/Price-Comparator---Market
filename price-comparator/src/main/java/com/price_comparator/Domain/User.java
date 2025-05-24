@@ -12,5 +12,13 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    public User() {
+    }
+
     private String name;
+
+    public User(Integer id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 }
