@@ -1,5 +1,6 @@
 package com.price_comparator.Domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -7,6 +8,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "app_user")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,5 +1,6 @@
 package com.price_comparator.Domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -8,6 +9,7 @@ import java.util.List;
 @Entity
 @Table(name = "shopping_carts")
 @Data
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class ShoppingCart {
 
     @Id
