@@ -3,6 +3,7 @@ package com.price_comparator.Controller;
 import com.price_comparator.Domain.DTO.DiscountDTO;
 import com.price_comparator.Domain.Discount;
 import com.price_comparator.Repository.DiscountRepository;
+import com.price_comparator.Service.DiscountService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,30 +14,22 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/discounts")
 public class DiscountController {
 
-    private final DiscountRepository discountRepository;
 
-    public DiscountController(DiscountRepository discountRepository) {
-        this.discountRepository = discountRepository;
+    private final DiscountService discountService;
+
+    public DiscountController(DiscountService discountService) {
+        this.discountService = discountService;
     }
 
     @GetMapping
-    public ResponseEntity<List<DiscountDTO>> getAllDiscounts() {
-        List<DiscountDTO> dtos = discountRepository.findAll()
-                .stream()
-                .map(d -> new DiscountDTO(
-                        d.getProductId(),
-                        d.getProductName(),
-                        d.getBrand(),
-                        d.getPackageQuantity(),
-                        d.getPackageUnit(),
-                        d.getProductCategory(),
-                        d.getFromDate(),
-                        d.getToDate(),
-                        d.getPercentageOfDiscount(),
-                        d.getStoreName()
-                ))
-                .collect(Collectors.toList());
+    public ResponseEntity<List<DiscountDTO>> getAllDiscounts()
+    {
+        return this.discountService.getAllDiscounts();
+    }
 
-        return ResponseEntity.ok(dtos);
+    @GetMapping("/new")
+    public ResponseEntity<List<DiscountDTO>> getNewDiscountsFromYesterday() {
+        List<DiscountDTO> discounts = discountService.getNewDiscountsFromYesterday();
+        return ResponseEntity.ok(discounts);
     }
 }
