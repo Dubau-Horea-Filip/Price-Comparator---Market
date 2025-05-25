@@ -89,7 +89,7 @@ public class ShoppingListServiceImpl implements ShoppingListService {
             ShoppingCartItem item = new ShoppingCartItem();
             item.setCart(cart);
             item.setProduct(product);
-            item.setQuantity(1); // Optional: pull from ShoppingList in the future
+            item.setQuantity(1); // TODO: pull from ShoppingList in the future
             item.setUnitPrice(best.getFinalPrice());
             item.setTotalPrice(best.getFinalPrice());
 
@@ -99,7 +99,6 @@ public class ShoppingListServiceImpl implements ShoppingListService {
 
         List<ShoppingCart> savedCarts = shoppingCartRepository.saveAll(new ArrayList<>(carts.values()));
 
-        // ✅ Convert to DTOs for response
         List<ShoppingCartDTO> res = savedCarts.stream().map(cart -> {
             ShoppingCartDTO cartDTO = new ShoppingCartDTO();
             cartDTO.setStore(cart.getStoreName());

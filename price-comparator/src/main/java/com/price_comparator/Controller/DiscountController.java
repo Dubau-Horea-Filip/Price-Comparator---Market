@@ -22,14 +22,20 @@ public class DiscountController {
     }
 
     @GetMapping
-    public ResponseEntity<List<DiscountDTO>> getAllDiscounts()
-    {
-        return this.discountService.getAllDiscounts();
+    public ResponseEntity<List<DiscountDTO>> getAllDiscounts() {
+        List<DiscountDTO> discounts = this.discountService.getAllDiscounts();
+        return ResponseEntity.ok(discounts);
     }
 
     @GetMapping("/new")
     public ResponseEntity<List<DiscountDTO>> getNewDiscountsFromYesterday() {
         List<DiscountDTO> discounts = discountService.getNewDiscountsFromYesterday();
+        return ResponseEntity.ok(discounts);
+    }
+
+    @GetMapping("/best")
+    public ResponseEntity<List<DiscountDTO>> getbestDiscounts() {
+        List<DiscountDTO> discounts = discountService.getBestDiscounts();
         return ResponseEntity.ok(discounts);
     }
 }

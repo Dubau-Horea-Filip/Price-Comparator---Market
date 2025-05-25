@@ -21,29 +21,20 @@ public class DiscountService {
 
     public List<DiscountDTO> getNewDiscountsFromYesterday() {
         LocalDate today = LocalDate.now();
-        LocalDate yesterday = LocalDate.now().minusDays(1);
-        List<DiscountDTO> dtos = discountRepository.findDiscountsFromTodayOrYesterday(today,yesterday)
-                .stream()
-                .map(d -> new DiscountDTO(
-                        d.getProductId(),
-                        d.getProductName(),
-                        d.getBrand(),
-                        d.getPackageQuantity(),
-                        d.getPackageUnit(),
-                        d.getProductCategory(),
-                        d.getFromDate(),
-                        d.getToDate(),
-                        d.getPercentageOfDiscount(),
-                        d.getStoreName()
-                ))
-                .collect(Collectors.toList());
-
-        return dtos;
+        LocalDate yesterday = today.minusDays(1);
+        return mapToDTOList(discountRepository.findDiscountsFromTodayOrYesterday(today, yesterday));
     }
 
-    public ResponseEntity<List<DiscountDTO>> getAllDiscounts() {
-        List<DiscountDTO> dtos = discountRepository.findAll()
-                .stream()
+    public List<DiscountDTO> getAllDiscounts() {
+        return mapToDTOList(discountRepository.findAll());
+    }
+
+    public List<DiscountDTO> getBestDiscounts() {
+        return mapToDTOList(discountRepository.findTop10ByOrderByPercentageOfDiscountDesc());
+    }
+
+    private List<DiscountDTO> mapToDTOList(List<Discount> discounts) {
+        return discounts.stream()
                 .map(d -> new DiscountDTO(
                         d.getProductId(),
                         d.getProductName(),
@@ -57,7 +48,5 @@ public class DiscountService {
                         d.getStoreName()
                 ))
                 .collect(Collectors.toList());
-
-        return ResponseEntity.ok(dtos);
     }
 }

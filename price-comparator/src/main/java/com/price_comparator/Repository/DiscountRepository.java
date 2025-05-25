@@ -19,6 +19,8 @@ public interface DiscountRepository extends JpaRepository<Discount, Long> {
     @Query("SELECT d FROM Discount d WHERE d.fromDate = :today OR d.fromDate = :yesterday")
     List<Discount> findDiscountsFromTodayOrYesterday(@Param("today") LocalDate today,
                                                      @Param("yesterday") LocalDate yesterday);
+
+
+    List<Discount> findTop10ByOrderByPercentageOfDiscountDesc();
+
 }
-
-

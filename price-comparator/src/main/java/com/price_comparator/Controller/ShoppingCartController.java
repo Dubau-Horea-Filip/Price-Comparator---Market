@@ -31,12 +31,12 @@ public class ShoppingCartController {
         return ResponseEntity.ok(shoppingCartDTOs);
     }
 
-    // Mapper method converting entity to DTO
     private ShoppingCartDTO convertToDTO(ShoppingCart shoppingCart) {
         ShoppingCartDTO dto = new ShoppingCartDTO();
         dto.setId(shoppingCart.getId());
         dto.setStore(shoppingCart.getStoreName());
         dto.setUserName(shoppingCart.getUser().getName());
+        dto.setTotalPrice(shoppingCart.getTotal());
 
         List<ItemDTO> items = shoppingCart.getItems().stream().map(item -> {
             ItemDTO itemDTO = new ItemDTO();
