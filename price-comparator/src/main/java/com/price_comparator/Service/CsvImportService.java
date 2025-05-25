@@ -45,7 +45,7 @@ public class CsvImportService {
         }
     }
 
-    public void importDiscounts(MultipartFile file) throws IOException {
+    public void importDiscounts(MultipartFile file, String storeName) throws IOException {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
             reader.readLine(); // Skip header
             String line;
@@ -61,8 +61,8 @@ public class CsvImportService {
                 discount.setFromDate(LocalDate.parse(tokens[6]));
                 discount.setToDate(LocalDate.parse(tokens[7]));
                 discount.setPercentageOfDiscount(Integer.parseInt(tokens[8]));
-
-                Product product = productRepository.findByProductId(tokens[0]);
+                discount.setStore(storeName);
+                Product product = productRepository.findByProductIdAndStore(tokens[0],storeName);
                 discount.setProduct(product);
 
                 discountRepository.save(discount);

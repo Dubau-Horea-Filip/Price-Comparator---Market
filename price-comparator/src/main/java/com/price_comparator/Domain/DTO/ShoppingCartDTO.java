@@ -6,6 +6,15 @@ public class ShoppingCartDTO {
     private Integer id;
     private String userName;
     private List<ItemDTO> items;
+    private String store;
+
+    public String getStore() {
+        return store;
+    }
+
+    public void setStore(String store) {
+        this.store = store;
+    }
 
     public Integer getId() {
         return id;

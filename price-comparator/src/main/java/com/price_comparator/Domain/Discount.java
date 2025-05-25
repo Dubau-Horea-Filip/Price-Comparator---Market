@@ -27,5 +27,9 @@ public class Discount {
     private LocalDate fromDate;
     private LocalDate toDate;
     private int percentageOfDiscount;
+    private String storeName;
 
+    public void setStore(String storeName) {
+        this.storeName = storeName;
+    }
 }

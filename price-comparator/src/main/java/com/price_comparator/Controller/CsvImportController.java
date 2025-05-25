@@ -50,10 +50,14 @@ public class CsvImportController {
         }
     }
 
+
     @PostMapping(value = "/discounts", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> importDiscounts(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<String> importDiscounts(@RequestParam("file") MultipartFile file,
+        @Parameter(description = "Store name for the products in this file", required = true)
+        @RequestParam("store") String storeName){
+
         try {
-            csvImportService.importDiscounts(file);
+            csvImportService.importDiscounts(file, storeName);
             return ResponseEntity.ok("Discounts imported successfully.");
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error importing discounts.");
