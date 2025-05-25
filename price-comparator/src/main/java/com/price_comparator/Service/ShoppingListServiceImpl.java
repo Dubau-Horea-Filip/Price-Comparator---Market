@@ -67,17 +67,17 @@ public class ShoppingListServiceImpl implements ShoppingListService {
             String store = cheapest.getStore();
 
             // Check for an active discount
-            Optional<Discount> discountOpt = discountRepository
-                    .findByProductIdAndFromDateLessThanEqualAndToDateGreaterThanEqual(
-                            productId, today, today);
+            List<Discount> discountOpt = discountRepository
+                    .findActiveDiscountsForProductOnDate(
+                            productId, today);
 
             double originalPrice = cheapest.getPrice();
             double finalPrice = originalPrice;
-
-            if (discountOpt.isPresent()) {
-                int percentage = discountOpt.get().getPercentageOfDiscount();
-                finalPrice = originalPrice * (1 - percentage / 100.0);
-            }
+//
+//            if (discountOpt.isPresent()) {
+//                int percentage = discountOpt.get().getPercentageOfDiscount();
+//                finalPrice = originalPrice * (1 - percentage / 100.0);
+//            }
 
             // Get or create the store-specific cart
             ShoppingCart cart = carts.computeIfAbsent(store, s -> {
