@@ -50,6 +50,10 @@ public class CsvImportController {
         }
     }
 
+    @Operation(
+            summary = "Upload discounts CSV",
+            description = "Imports discounts data from a CSV file for a specified store."
+    )
     @PostMapping(value = "/discounts", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> importDiscounts(@RequestParam("file") MultipartFile file,
         @Parameter(description = "Store name for the products in this file", required = true)

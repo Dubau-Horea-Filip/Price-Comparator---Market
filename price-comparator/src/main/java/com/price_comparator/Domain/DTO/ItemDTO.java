@@ -4,6 +4,15 @@ public class ItemDTO {
     private Integer id;
     private String productName;
     private int quantity;
+    private double finalPrice;
+
+    public double getFinalPrice() {
+        return finalPrice;
+    }
+
+    public void setFinalPrice(double finalPrice) {
+        this.finalPrice = finalPrice;
+    }
 
     public Integer getId() {
         return id;

@@ -102,6 +102,8 @@ public class ShoppingListServiceImpl implements ShoppingListService {
         List<ShoppingCartDTO> res = savedCarts.stream().map(cart -> {
             ShoppingCartDTO cartDTO = new ShoppingCartDTO();
             cartDTO.setStore(cart.getStoreName());
+            cartDTO.setUserName(cart.getUser().getName());
+            cartDTO.setId(cart.getId());
             cartDTO.setTotalPrice(
                     BigDecimal.valueOf(cart.getTotal())
                             .setScale(2, RoundingMode.HALF_UP)
@@ -113,6 +115,7 @@ public class ShoppingListServiceImpl implements ShoppingListService {
                 dto.setId(item.getProduct().getId());
                 dto.setProductName(item.getProduct().getProductName());
                 dto.setQuantity(item.getQuantity());
+                dto.setFinalPrice(item.getTotalPrice());
                 return dto;
             }).toList();
 
