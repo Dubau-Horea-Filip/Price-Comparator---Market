@@ -1,6 +1,7 @@
 package com.price_comparator.Controller;
 
 
+import com.price_comparator.Domain.DTO.ShoppingCartDTO;
 import com.price_comparator.Domain.ShoppingList;
 import com.price_comparator.Domain.ShoppingCart;
 import com.price_comparator.Service.ShoppingListService;
@@ -35,8 +36,8 @@ public class ShoppingListController {
     }
 
     @PostMapping("/{userId}/generate-carts")
-    public ResponseEntity<List<ShoppingCart>> generateCarts(@PathVariable String userId) {
-        List<ShoppingCart> carts = shoppingListService.generateShoppingCarts(userId);
+    public ResponseEntity<List<ShoppingCartDTO>> generateCarts(@PathVariable String userId) {
+        List<ShoppingCartDTO> carts = shoppingListService.generateShoppingCarts(userId);
         return ResponseEntity.ok(carts);
     }
 }

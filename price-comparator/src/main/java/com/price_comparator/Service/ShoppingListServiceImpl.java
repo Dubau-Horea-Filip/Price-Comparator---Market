@@ -1,12 +1,16 @@
 package com.price_comparator.Service;
 
 
-
 import com.price_comparator.Domain.*;
+import com.price_comparator.Domain.DTO.FinalPriceDTO;
+import com.price_comparator.Domain.DTO.ItemDTO;
+import com.price_comparator.Domain.DTO.ShoppingCartDTO;
 import com.price_comparator.Repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -20,6 +24,7 @@ public class ShoppingListServiceImpl implements ShoppingListService {
     private final UserRepository userRepository;
     private final DiscountRepository discountRepository;
     private final ShoppingCartRepository shoppingCartRepository;
+    private final PriceCalculationService priceCalculationService;
 
     @Override
     public void addToShoppingList(String userId, String productId) {
@@ -53,59 +58,68 @@ public class ShoppingListServiceImpl implements ShoppingListService {
 
     @Override
     @Transactional
-    public List<ShoppingCart> generateShoppingCarts(String userId) {
+    public List<ShoppingCartDTO> generateShoppingCarts(String userId) {
+        Integer userIdInt = Integer.valueOf(userId);
+        shoppingCartRepository.deleteByUserId(userIdInt);
+
         ShoppingList list = getShoppingListByUser(userId);
         Map<String, ShoppingCart> carts = new HashMap<>();
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.of(2025, 5, 5); // For testing purposes
 
         for (String productId : list.getProductIds()) {
-            // Find the cheapest product with this productId
-            Optional<Product> cheapestOpt = productRepository.findTopByProductIdOrderByPriceAsc(productId);
-            if (cheapestOpt.isEmpty()) continue;
+            List<FinalPriceDTO> bestPrices = priceCalculationService.getLowestFinalPrice(productId);
+            if (bestPrices.isEmpty()) continue;
 
-            Product cheapest = cheapestOpt.get();
-            String store = cheapest.getStore();
+            FinalPriceDTO best = bestPrices.get(0);
 
-            // Check for an active discount
-            List<Discount> discountOpt = discountRepository
-                    .findActiveDiscountsForProductOnDate(
-                            productId, today);
+            Product product = productRepository.findByProductIdAndStore(productId, best.getStoreName());
+            if (product == null) continue;
 
-            double originalPrice = cheapest.getPrice();
-            double finalPrice = originalPrice;
-//
-//            if (discountOpt.isPresent()) {
-//                int percentage = discountOpt.get().getPercentageOfDiscount();
-//                finalPrice = originalPrice * (1 - percentage / 100.0);
-//            }
-
-            // Get or create the store-specific cart
-            ShoppingCart cart = carts.computeIfAbsent(store, s -> {
+            ShoppingCart cart = carts.computeIfAbsent(best.getStoreName(), store -> {
                 ShoppingCart newCart = new ShoppingCart();
-                newCart.setStoreName(s);
-                User u = userRepository.findById(Integer.valueOf(userId))
+                newCart.setStoreName(store);
+                User user = userRepository.findById(userIdInt)
                         .orElseThrow(() -> new NoSuchElementException("User not found: " + userId));
-                newCart.setUser(u); // TODO: Set the user
+                newCart.setUser(user);
                 newCart.setItems(new ArrayList<>());
                 newCart.setTotal(0);
                 return newCart;
             });
 
-            // Create cart item
             ShoppingCartItem item = new ShoppingCartItem();
             item.setCart(cart);
-            item.setProduct(cheapest);
-            item.setQuantity(1); //TODO Extend later to support per-product quantity
-            item.setUnitPrice(finalPrice);
-            item.setTotalPrice(finalPrice);
+            item.setProduct(product);
+            item.setQuantity(1); // Optional: pull from ShoppingList in the future
+            item.setUnitPrice(best.getFinalPrice());
+            item.setTotalPrice(best.getFinalPrice());
 
             cart.getItems().add(item);
-            cart.setTotal(cart.getTotal() + finalPrice);
+            cart.setTotal(cart.getTotal() + best.getFinalPrice());
         }
 
-        // Persist all carts with their items
         List<ShoppingCart> savedCarts = shoppingCartRepository.saveAll(new ArrayList<>(carts.values()));
-        return savedCarts;
-    }
 
+        // ✅ Convert to DTOs for response
+        List<ShoppingCartDTO> res = savedCarts.stream().map(cart -> {
+            ShoppingCartDTO cartDTO = new ShoppingCartDTO();
+            cartDTO.setStore(cart.getStoreName());
+            cartDTO.setTotalPrice(
+                    BigDecimal.valueOf(cart.getTotal())
+                            .setScale(2, RoundingMode.HALF_UP)
+                            .doubleValue()
+            );
+
+            List<ItemDTO> items = cart.getItems().stream().map(item -> {
+                ItemDTO dto = new ItemDTO();
+                dto.setId(item.getProduct().getId());
+                dto.setProductName(item.getProduct().getProductName());
+                dto.setQuantity(item.getQuantity());
+                return dto;
+            }).toList();
+
+            cartDTO.setItems(items);
+            return cartDTO;
+        }).toList();
+        return res;
+    }
 }

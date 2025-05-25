@@ -7,6 +7,15 @@ public class ShoppingCartDTO {
     private String userName;
     private List<ItemDTO> items;
     private String store;
+    private Double totalPrice;
+
+    public Double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(Double totalPrice) {
+        this.totalPrice = totalPrice;
+    }
 
     public String getStore() {
         return store;

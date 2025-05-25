@@ -1,5 +1,6 @@
 package com.price_comparator.Service;
 
+import com.price_comparator.Domain.DTO.ShoppingCartDTO;
 import com.price_comparator.Domain.ShoppingCart;
 import com.price_comparator.Domain.ShoppingList;
 
@@ -9,5 +10,5 @@ public interface ShoppingListService {
     void addToShoppingList(String userId, String productId);
     ShoppingList getShoppingListByUser(String userId);
     void clearList(String userId);
-    List<ShoppingCart> generateShoppingCarts(String userId);
+    List<ShoppingCartDTO> generateShoppingCarts(String userId);
 }
